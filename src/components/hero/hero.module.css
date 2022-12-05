@@ -1,0 +1,31 @@
+.Hero {
+	background-image: url("../../img/bank-tree.jpeg");
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: 0 -170px;
+	position: relative;
+	height: 500px;
+}
+.hero_section {
+	background: white;
+	position: absolute;
+	top: 10rem;
+     right: 10rem;
+	width: 200px;
+	padding: 2rem;
+	text-align: left;
+}
+.hero_section h2 {
+	visibility: hidden;
+	margin: 0;
+	height: 0;
+}
+.hero_section p {
+	margin-bottom: 0;
+	font-size: 0.9rem;
+}
+.subtitle {
+	font-size: 1rem;
+	font-weight: bold;
+	margin: 0;
+}
