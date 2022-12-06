@@ -37,9 +37,7 @@ export const loginUser = createAsyncThunk(
 export const profileUser = createAsyncThunk(
      'user/profileUser',
      async () => {   
-          const token = localStorage.getItem('token');
-          console.log(token);
-          
+          const token = localStorage.getItem('token');          
           try {
                const data = await axios.post(`${URL}/profile`, {} ,{
                     headers: {
@@ -57,6 +55,31 @@ export const profileUser = createAsyncThunk(
      }
 );
 
+export const updateUser = createAsyncThunk(
+     'user/updateUser',
+     async (user: { firstName: string, lastName: string }) => {
+          const token = localStorage.getItem('token');
+          try {
+               const data = await axios.put(`${URL}/profile`, {
+                    firstName: user.firstName,
+                    lastName: user.lastName
+               }, {
+                    headers: {
+                         "Content-Type": "application/json",
+                         Authorization: `Bearer ${token}`
+                    }
+               }).then((res) => {
+                    console.log(res.data);
+                    return res.data.body;
+               })
+               return data;
+          } catch (err) {
+               return console.log(err);
+          }
+     }
+);
+                         
+
      
 
 const userSlice = createSlice({
@@ -71,7 +94,7 @@ const userSlice = createSlice({
                return { ...state, status: 'loading' }
           });
           builder.addCase(loginUser.fulfilled, (state, action) => {
-               return { ...state, status: 'success' }
+               return { ...state, status: 'success'}
           });
           builder.addCase(loginUser.rejected, (state, action) => {
                return { ...state, status: 'failed' }
@@ -80,13 +103,20 @@ const userSlice = createSlice({
                return { ...state }
           });
           builder.addCase(profileUser.fulfilled, (state, action) => {
-               return { ...state, user: action.payload }
+               return { ...state, user: action.payload, connected: true }
           });
           builder.addCase(profileUser.rejected, (state, action) => {
                return { ...state }
           });
-
-
+          builder.addCase(updateUser.pending, (state, action) => {
+               return { ...state }
+          });
+          builder.addCase(updateUser.fulfilled, (state, action) => {
+               return { ...state, user: action.payload }
+          });
+          builder.addCase(updateUser.rejected, (state, action) => {
+               return { ...state }
+          });
      },
 });
 export default userSlice.reducer;
