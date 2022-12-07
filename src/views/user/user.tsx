@@ -1,14 +1,15 @@
-import React, { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect } from 'react';
 import styles from './user.module.css';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Routes, Route } from 'react-router';
 import Login from './../login/login';
 import { updateUser } from './../../store/slice';
+import UseSelector from './../../store/selector';
 
 interface UserProps { }
 
 const User: FC<UserProps> = () => {
-  const user = useSelector((state: any) => state.user);
+  const user = UseSelector();
   const dispatch = useDispatch<any>();
   const [isShowing, setIsShowing] = useState(false);
 
@@ -30,8 +31,12 @@ const User: FC<UserProps> = () => {
     e.preventDefault();
     const firstName = e.target.parentElement.firstName.value;
     const lastName = e.target.parentElement.lastName.value;
-    console.log(firstName, lastName);
-    dispatch(updateUser({ firstName, lastName }));
+    const data = {
+      firstName,
+      lastName,
+      token: user.token
+    }
+    dispatch(updateUser(data));
     closeModalHandler();
   };
 

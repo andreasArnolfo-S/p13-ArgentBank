@@ -1,28 +1,31 @@
 import styles from './loginForm.module.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { loginUser } from './../../store/slice';
+import UseSelector from '../../store/selector';
 
 const LoginForm = () => {
   const dispatch = useDispatch<any>();
   const navigate = useNavigate();
-  const status = useSelector((state: any) => state.user.status);
-  console.log(status);
+  const status = UseSelector();
+
+  console.log(status.token);
+  
 
   useEffect(() => {
-    if (status === 'success') {
+    if (status.status === 'success') {
       navigate('/user');
     }
-    if (status === 'failed') {
+    if (status.status === 'failed') {
       navigate('/login');
     }
-    if (status === 'loading') {
+    if (status.status === 'loading') {
         <div>
           <h1>Loading...</h1>
         </div>
     }
-  }, [status, navigate]);
+  }, [status.status, navigate]);
 
   const [user, setUser] = useState({
     email: '',

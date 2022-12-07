@@ -12,9 +12,10 @@ const initialState = {
           firstName: '',
           lastName: ''
      },
-     token: localStorage.getItem('token'),
+     token: null,
      error: null
 };
+
 
 export const loginUser = createAsyncThunk(
      'user/loginUser',
@@ -24,10 +25,9 @@ export const loginUser = createAsyncThunk(
                     email: user.email,
                     password: user.password
                }).then((res) => {
-                    console.log(res.data);
                     return res.data.body.token;
                })
-               localStorage.setItem('token', data);
+               return data;
           } catch (err) {
                return rejectWithValue(err);
           }
@@ -36,8 +36,7 @@ export const loginUser = createAsyncThunk(
 
 export const profileUser = createAsyncThunk(
      'user/profileUser',
-     async () => {   
-          const token = localStorage.getItem('token');          
+     async (token: string, { rejectWithValue }) => {   
           try {
                const data = await axios.post(`${URL}/profile`, {} ,{
                     headers: {
@@ -45,20 +44,18 @@ export const profileUser = createAsyncThunk(
                          Authorization: `Bearer ${token}`
                     }
                }).then((res) => {
-                    console.log(res.data);
                     return res.data.body;
                })
                return data;
           } catch (err) {
-               return console.log(err);
+               return rejectWithValue(err);
           }
      }
 );
 
 export const updateUser = createAsyncThunk(
      'user/updateUser',
-     async (user: { firstName: string, lastName: string }) => {
-          const token = localStorage.getItem('token');
+     async (user:{firstName: string, lastName: string, token: string}, { rejectWithValue } ) => {
           try {
                const data = await axios.put(`${URL}/profile`, {
                     firstName: user.firstName,
@@ -66,35 +63,39 @@ export const updateUser = createAsyncThunk(
                }, {
                     headers: {
                          "Content-Type": "application/json",
-                         Authorization: `Bearer ${token}`
+                         Authorization: `Bearer ${user.token}`
                     }
                }).then((res) => {
-                    console.log(res.data);
                     return res.data.body;
                })
                return data;
           } catch (err) {
-               return console.log(err);
+               return rejectWithValue(err);
           }
      }
 );
-                         
 
-     
+export const logoutUser = () => {
+     return { type: 'user/logoutUser' }
+}
+
+    
 
 const userSlice = createSlice({
      name: 'user',
      initialState,
      reducers: {
-
+          logoutUser: (state, action) => {
+               return initialState;
+          }
      },
      extraReducers: (builder) => {
           /* A reducer that is being added to the userSlice.reducer. */
           builder.addCase(loginUser.pending, (state, action) => {
                return { ...state, status: 'loading' }
           });
-          builder.addCase(loginUser.fulfilled, (state, action) => {
-               return { ...state, status: 'success'}
+          builder.addCase(loginUser.fulfilled, (state, action) => {               
+               return { ...state, status: 'success', token: action.payload}
           });
           builder.addCase(loginUser.rejected, (state, action) => {
                return { ...state, status: 'failed' }

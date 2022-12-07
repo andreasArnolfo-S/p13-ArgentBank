@@ -1,23 +1,29 @@
 import { useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import styles from './navbar.module.css';
-import { useSelector, useDispatch } from 'react-redux';
-import { profileUser } from '../../store/slice';
+import { useDispatch } from 'react-redux';
+import { logoutUser, profileUser } from '../../store/slice';
+import UseSelector from '../../store/selector';
 
 
 const Navbar = () => {
-  const user = useSelector((state: any) => state.user);
+  const user = UseSelector();
   const dispatch = useDispatch<any>();
+  const navigate = useNavigate();
+
+
+  console.log(user.token);
+  
   
   useEffect(() => {
     if (user.status === 'success') {
-      dispatch(profileUser());
+      dispatch(profileUser(user.token));
     } 
   }, [dispatch, user.status, user.token]);
 
   const logout = () => {
-    localStorage.removeItem('token');
-    window.location.reload();
+    dispatch(logoutUser())
+    navigate('/login');
   }
 
   return (
