@@ -4,17 +4,13 @@ import styles from './navbar.module.css';
 import { useDispatch } from 'react-redux';
 import { logoutUser, profileUser } from '../../store/slice';
 import UseSelector from '../../store/selector';
-
+import { BiLogOut, BiUserCircle } from 'react-icons/bi';
 
 const Navbar = () => {
   const user = UseSelector();
   const dispatch = useDispatch<any>();
   const navigate = useNavigate();
 
-
-  console.log(user.token);
-  
-  
   useEffect(() => {
     if (user.status === 'success') {
       dispatch(profileUser(user.token));
@@ -40,12 +36,13 @@ const Navbar = () => {
         {
           user.status === 'success' ?
             <div className={styles.profile}>
-              <p>{user.user.firstName} {user.user.lastName}</p>
+              <BiUserCircle className={styles.Ucircle} />
+              <p> {user.user.firstName} {user.user.lastName}</p>
+              <BiLogOut className={styles.logout} />
               <NavLink to="/" onClick={logout}>Logout</NavLink>
             </div>
             :
             <NavLink className={styles.main_nav_item} to="/login">
-              <i className="fa fa-user-circle"></i>
               Sign In
             </NavLink>
         }

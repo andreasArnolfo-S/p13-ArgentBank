@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import sessionStorage from 'redux-persist/es/storage/session';
+
 
 const URL = "http://localhost:3001/api/v1/user";
 
@@ -15,7 +17,6 @@ const initialState = {
      token: null,
      error: null
 };
-
 
 export const loginUser = createAsyncThunk(
      'user/loginUser',
@@ -75,11 +76,28 @@ export const updateUser = createAsyncThunk(
      }
 );
 
+export const rememberMe = async (token: any) => {
+     try {
+          await sessionStorage.setItem('token', JSON.stringify(token));
+     } catch (err) {
+          console.log(err);
+     }
+};
+
+export const getToken = async () => {
+     try {
+          const token = await sessionStorage.getItem('token');
+          console.log(token);
+          return token;
+     } catch (err) {
+          console.log(err);
+     }
+};
+
+
 export const logoutUser = () => {
      return { type: 'user/logoutUser' }
 }
-
-    
 
 const userSlice = createSlice({
      name: 'user',

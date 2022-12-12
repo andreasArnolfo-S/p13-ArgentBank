@@ -2,16 +2,18 @@ import styles from './loginForm.module.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { loginUser } from './../../store/slice';
+import { loginUser, rememberMe, getToken } from './../../store/slice';
 import UseSelector from '../../store/selector';
 
 const LoginForm = () => {
   const dispatch = useDispatch<any>();
   const navigate = useNavigate();
   const status = UseSelector();
+  const [check, setCheck] = useState(false);
 
-  console.log(status.token);
-  
+  const handleCheck = () => {
+    setCheck(!check);
+  }
 
   useEffect(() => {
     if (status.status === 'success') {
@@ -25,6 +27,9 @@ const LoginForm = () => {
           <h1>Loading...</h1>
         </div>
     }
+    if (getToken() !== null) {
+      navigate('/user');
+    }
   }, [status.status, navigate]);
 
   const [user, setUser] = useState({
@@ -34,6 +39,9 @@ const LoginForm = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
+    if (check === true) {
+      rememberMe(status.token);
+    }
     dispatch(loginUser(user))
   };
   return (
@@ -47,7 +55,7 @@ const LoginForm = () => {
         <input type="password" id="password" onChange={(e)=> setUser({...user, password: e.target.value})} required/>
       </div>
       <div className={styles.input_remember}>
-        <input type="checkbox" id="remember-me" />
+        <input type="checkbox" id="remember-me" onClick={handleCheck}/>
         <label htmlFor="remember-me">Remember me</label>
       </div>
       <button onClick={handleSubmit} className={styles.sign_in_button}>Sign In</button>
