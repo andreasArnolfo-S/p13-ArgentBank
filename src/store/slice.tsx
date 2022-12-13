@@ -76,18 +76,18 @@ export const updateUser = createAsyncThunk(
      }
 );
 
-export const rememberMe = async (token: any) => {
-     try {
-          await sessionStorage.setItem('token', JSON.stringify(token));
+export const rememberMe = (token: string) => {
+     console.log(token);
+     try {         
+          sessionStorage.setItem('token', token);
      } catch (err) {
           console.log(err);
      }
 };
 
-export const getToken = async () => {
+export const getToken = () => {
      try {
-          const token = await sessionStorage.getItem('token');
-          console.log(token);
+          const token = sessionStorage.getItem('token');          
           return token;
      } catch (err) {
           console.log(err);
@@ -104,6 +104,7 @@ const userSlice = createSlice({
      initialState,
      reducers: {
           logoutUser: (state, action) => {
+               sessionStorage.removeItem('token');
                return initialState;
           }
      },

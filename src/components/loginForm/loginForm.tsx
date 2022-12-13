@@ -28,6 +28,7 @@ const LoginForm = () => {
         </div>
     }
     if (getToken() !== null) {
+      console.log(getToken());
       navigate('/user');
     }
   }, [status.status, navigate]);
@@ -40,6 +41,8 @@ const LoginForm = () => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (check === true) {
+      console.log(status.token);
+      
       rememberMe(status.token);
     }
     dispatch(loginUser(user))
