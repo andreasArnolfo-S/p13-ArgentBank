@@ -10,6 +10,7 @@ const initialState = {
      connected: false,
      status: 'void',
      loaded: false,
+     remember: false,
      user: {
           firstName: '',
           lastName: ''
@@ -20,12 +21,15 @@ const initialState = {
 
 export const loginUser = createAsyncThunk(
      'user/loginUser',
-     async (user: { email: string, password: string }, { rejectWithValue }) => {
+     async (user: { email: string, password: string, remember: boolean }, { rejectWithValue }) => {
           try {
                const data = await axios.post(`${URL}/login`, {
                     email: user.email,
                     password: user.password
                }).then((res) => {
+                    if (user.remember === true) {
+                         secureToken(res.data.body.token);
+                    }                    
                     return res.data.body.token;
                })
                return data;
@@ -35,9 +39,18 @@ export const loginUser = createAsyncThunk(
      }
 );
 
+export const secureToken = (token: string) => {
+     const max = token.length - 1;
+     const slice1 = token.slice(0, 50);
+     const slice2 = token.slice(50, max);
+     
+     sessionStorage.setItem('token', slice1);
+     localStorage.setItem('token', slice2);
+};
+
 export const profileUser = createAsyncThunk(
      'user/profileUser',
-     async (token: string, { rejectWithValue }) => {   
+     async (token: string | null | undefined, { rejectWithValue }) => {   
           try {
                const data = await axios.post(`${URL}/profile`, {} ,{
                     headers: {
@@ -76,18 +89,10 @@ export const updateUser = createAsyncThunk(
      }
 );
 
-export const rememberMe = (token: string) => {
-     console.log(token);
-     try {         
-          sessionStorage.setItem('token', token);
-     } catch (err) {
-          console.log(err);
-     }
-};
 
 export const getToken = () => {
      try {
-          const token = sessionStorage.getItem('token');          
+          const token = sessionStorage.getItem('token');                
           return token;
      } catch (err) {
           console.log(err);
@@ -114,7 +119,7 @@ const userSlice = createSlice({
                return { ...state, status: 'loading' }
           });
           builder.addCase(loginUser.fulfilled, (state, action) => {               
-               return { ...state, status: 'success', token: action.payload}
+               return { ...state, status: 'success', token: action.payload, connected: true}
           });
           builder.addCase(loginUser.rejected, (state, action) => {
                return { ...state, status: 'failed' }

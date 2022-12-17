@@ -9,6 +9,7 @@ const Router = () => {
                <Route path="/" element={<Home />} />
                <Route path="/login" element={<Login />} />
                <Route path='/user' element={<User />} />
+               <Route path="*" element={<h1>404: Not Found</h1>} />
           </Routes>
      )
 

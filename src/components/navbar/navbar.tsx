@@ -11,11 +11,13 @@ const Navbar = () => {
   const dispatch = useDispatch<any>();
   const navigate = useNavigate();
 
+
   useEffect(() => {
-    if (user.status === 'success') {
+    if (user.connected === true) {
       dispatch(profileUser(user.token));
-    } 
-  }, [dispatch, user.status, user.token]);
+    }
+
+  }, [dispatch, user.connected, user.token]);
 
   const logout = () => {
     dispatch(logoutUser())
@@ -34,7 +36,7 @@ const Navbar = () => {
       </a>
       <div>
         {
-          user.status === 'success' ?
+          user.connected === true ?
             <div className={styles.profile}>
               <BiUserCircle className={styles.Ucircle} />
               <p> {user.user.firstName} {user.user.lastName}</p>

@@ -2,50 +2,27 @@ import styles from './loginForm.module.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { loginUser, rememberMe, getToken } from './../../store/slice';
-import UseSelector from '../../store/selector';
+import { getToken, loginUser, logoutUser } from './../../store/slice';
 
 const LoginForm = () => {
   const dispatch = useDispatch<any>();
   const navigate = useNavigate();
-  const status = UseSelector();
-  const [check, setCheck] = useState(false);
-
-  const handleCheck = () => {
-    setCheck(!check);
-  }
 
   useEffect(() => {
-    if (status.status === 'success') {
-      navigate('/user');
-    }
-    if (status.status === 'failed') {
-      navigate('/login');
-    }
-    if (status.status === 'loading') {
-        <div>
-          <h1>Loading...</h1>
-        </div>
-    }
-    if (getToken() !== null) {
-      console.log(getToken());
-      navigate('/user');
-    }
-  }, [status.status, navigate]);
+    dispatch(logoutUser());
+  }, [dispatch, navigate]);
 
   const [user, setUser] = useState({
     email: '',
-    password: ''
+    password: '',
+    remember: false
   });
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    if (check === true) {
-      console.log(status.token);
-      
-      rememberMe(status.token);
-    }
     dispatch(loginUser(user))
+    getToken()
+    navigate('/user');
   };
   return (
     <form>
@@ -58,7 +35,7 @@ const LoginForm = () => {
         <input type="password" id="password" onChange={(e)=> setUser({...user, password: e.target.value})} required/>
       </div>
       <div className={styles.input_remember}>
-        <input type="checkbox" id="remember-me" onClick={handleCheck}/>
+        <input type="checkbox" id="remember-me" onChange={(e)=> setUser({...user, remember: e.target.checked})}/>
         <label htmlFor="remember-me">Remember me</label>
       </div>
       <button onClick={handleSubmit} className={styles.sign_in_button}>Sign In</button>
