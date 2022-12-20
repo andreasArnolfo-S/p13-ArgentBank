@@ -113,6 +113,7 @@ const userSlice = createSlice({
      reducers: {
           logoutUser: (state, action) => {
                sessionStorage.removeItem('token');
+               localStorage.removeItem('token');
                return initialState;
           }
      },

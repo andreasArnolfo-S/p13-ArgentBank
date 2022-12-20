@@ -7,9 +7,16 @@ import { getToken, loginUser, logoutUser } from './../../store/slice';
 const LoginForm = () => {
   const dispatch = useDispatch<any>();
   const navigate = useNavigate();
+  const mytoken = getToken();
 
+  console.log('mytoken', mytoken);
+  
   useEffect(() => {
-    dispatch(logoutUser());
+    if (mytoken !== null) {
+      navigate('/user');
+    } else {
+      dispatch(logoutUser());
+    }
   }, [dispatch, navigate]);
 
   const [user, setUser] = useState({
