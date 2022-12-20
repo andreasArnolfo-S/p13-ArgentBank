@@ -92,7 +92,10 @@ export const updateUser = createAsyncThunk(
 
 export const getToken = () => {
      try {
-          const token = sessionStorage.getItem('token');                
+          const tokenSession = sessionStorage.getItem('token');  
+          const tokenLocal = localStorage.getItem('token');
+          if(tokenSession === null || tokenLocal === null) return null;
+          const token = tokenSession + tokenLocal;            
           return token;
      } catch (err) {
           console.log(err);

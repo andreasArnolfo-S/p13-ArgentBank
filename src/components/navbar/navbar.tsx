@@ -3,21 +3,22 @@ import { useNavigate, NavLink } from 'react-router-dom';
 import styles from './navbar.module.css';
 import { useDispatch } from 'react-redux';
 import { logoutUser, profileUser } from '../../store/slice';
-import UseSelector from '../../store/selector';
 import { BiLogOut, BiUserCircle } from 'react-icons/bi';
+import { GetConnected, GetToken, GetUser } from '../../store/selectors';
 
 const Navbar = () => {
-  const user = UseSelector();
+  const user = GetUser();
+  const token = GetToken();
+  const connected = GetConnected();
   const dispatch = useDispatch<any>();
   const navigate = useNavigate();
 
 
   useEffect(() => {
-    if (user.connected === true) {
-      dispatch(profileUser(user.token));
+    if (connected === true) {
+      dispatch(profileUser(token));
     }
-
-  }, [dispatch, user.connected, user.token]);
+  }, [dispatch, connected, token]);
 
   const logout = () => {
     dispatch(logoutUser())
@@ -36,10 +37,10 @@ const Navbar = () => {
       </a>
       <div>
         {
-          user.connected === true ?
+          connected ?
             <div className={styles.profile}>
               <BiUserCircle className={styles.Ucircle} />
-              <p> {user.user.firstName} {user.user.lastName}</p>
+              <p> {user.firstName} {user.lastName}</p>
               <BiLogOut className={styles.logout} />
               <NavLink to="/" onClick={logout}>Logout</NavLink>
             </div>

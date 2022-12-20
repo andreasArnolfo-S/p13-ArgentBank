@@ -4,12 +4,14 @@ import { useDispatch } from 'react-redux';
 import { Routes, Route } from 'react-router';
 import Login from './../login/login';
 import { updateUser } from './../../store/slice';
-import UseSelector from './../../store/selector';
+import { GetConnected, GetToken, GetUser } from '../../store/selectors';
 
 interface UserProps { }
 
 const User: FC<UserProps> = () => {
-  const user = UseSelector();
+  const user = GetUser();
+  const connected = GetConnected();
+  const token = GetToken();
   const dispatch = useDispatch<any>();
   const [isShowing, setIsShowing] = useState(false);
 
@@ -19,7 +21,6 @@ const User: FC<UserProps> = () => {
   const closeModalHandler = () => {
     setIsShowing(false);
   };
-
   useEffect(() => {
     const modal = document.getElementById('modal');
     if (modal) {
@@ -34,7 +35,7 @@ const User: FC<UserProps> = () => {
     const data = {
       firstName,
       lastName,
-      token: user.token
+      token: token
     }
     dispatch(updateUser(data));
     closeModalHandler();
@@ -60,10 +61,10 @@ const User: FC<UserProps> = () => {
 
 
   return (
-    user.status === 'success' ?
+    connected ?
       <div className={styles.User}>
         <div className={styles.header}>
-          <h1>Welcome back<br />{user.user.firstName} {user.user.lastName}</h1>
+          <h1>Welcome back<br />{user.firstName} {user.lastName}</h1>
           <button className={styles.edit_button} onClick={openModalHandler}>Edit Name</button>
           <div id="modal" className={styles.modal}>
             <div className={styles.modal_content}>
