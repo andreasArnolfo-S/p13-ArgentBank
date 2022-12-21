@@ -1,20 +1,23 @@
 import { FC, useState, useEffect } from 'react';
 import styles from './user.module.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Routes, Route } from 'react-router';
 import Login from './../login/login';
 import { updateUser } from './../../store/slice';
-import { GetConnected, GetToken, GetUser } from '../../store/selectors';
+import { IwantToGet } from '../../store/selectors';
 
 interface UserProps { }
 
 const User: FC<UserProps> = () => {
-  const user = GetUser();
-  const connected = GetConnected();
-  const token = GetToken();
   const dispatch = useDispatch<any>();
   const [isShowing, setIsShowing] = useState(false);
 
+  const select = useSelector(IwantToGet(['user', 'token', 'connected']))
+
+  const user = select[0].user;
+  const token = select[1].token;
+  const connected = select[2].connected;
+  
   const openModalHandler = () => {
     setIsShowing(true);
   };

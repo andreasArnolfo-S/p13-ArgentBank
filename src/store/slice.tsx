@@ -3,7 +3,6 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import sessionStorage from 'redux-persist/es/storage/session';
 
-
 const URL = "http://localhost:3001/api/v1/user";
 
 const initialState = {
@@ -42,10 +41,12 @@ export const loginUser = createAsyncThunk(
 export const secureToken = (token: string) => {
      const max = token.length - 1;
      const slice1 = token.slice(0, 50);
-     const slice2 = token.slice(50, max);
+     const slice3 = token.slice(50, 60);
+     const slice2 = token.slice(60, max);
      
      sessionStorage.setItem('token', slice1);
      localStorage.setItem('token', slice2);
+     document.cookie = `token=${slice3}`;
 };
 
 export const profileUser = createAsyncThunk(
@@ -89,7 +90,6 @@ export const updateUser = createAsyncThunk(
      }
 );
 
-
 export const getToken = () => {
      try {
           const tokenSession = sessionStorage.getItem('token');  
@@ -101,7 +101,6 @@ export const getToken = () => {
           console.log(err);
      }
 };
-
 
 export const logoutUser = () => {
      return { type: 'user/logoutUser' }

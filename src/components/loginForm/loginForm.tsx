@@ -1,13 +1,17 @@
 import styles from './loginForm.module.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getToken, loginUser, logoutUser } from './../../store/slice';
+import { IwantToGet } from '../../store/selectors';
 
 const LoginForm = () => {
   const dispatch = useDispatch<any>();
   const navigate = useNavigate();
-  const mytoken = getToken();
+
+  const select = useSelector(IwantToGet(['token']))
+
+  const mytoken = select[0].token;
 
   console.log('mytoken', mytoken);
   
@@ -17,7 +21,7 @@ const LoginForm = () => {
     } else {
       dispatch(logoutUser());
     }
-  }, [dispatch, navigate]);
+  }, [dispatch, navigate, mytoken]);
 
   const [user, setUser] = useState({
     email: '',

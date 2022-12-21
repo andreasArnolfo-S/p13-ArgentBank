@@ -1,18 +1,20 @@
 import { useEffect } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
 import styles from './navbar.module.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser, profileUser } from '../../store/slice';
 import { BiLogOut, BiUserCircle } from 'react-icons/bi';
-import { GetConnected, GetToken, GetUser } from '../../store/selectors';
+import { IwantToGet } from '../../store/selectors';
 
 const Navbar = () => {
-  const user = GetUser();
-  const token = GetToken();
-  const connected = GetConnected();
   const dispatch = useDispatch<any>();
   const navigate = useNavigate();
 
+  const select = useSelector(IwantToGet(['user', 'token', 'connected']))
+
+  const user = select[0].user;
+  const token = select[1].token;
+  const connected = select[2].connected;
 
   useEffect(() => {
     if (connected === true) {
