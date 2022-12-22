@@ -70,6 +70,7 @@ paths:
           name: Authorization
           description: Attach Bearer JWT token
           required: true
+          type: 'string'
       produces:
         - application/json
       responses:
@@ -93,6 +94,7 @@ paths:
           name: Authorization
           description: Attach Bearer JWT token
           required: true
+          type: 'string'
         - in: body
           name: body
           description: Update user profile attributes
@@ -110,155 +112,124 @@ paths:
           description: Invalid Fields
         '500':
           description: Internal Server Error
-  /user/transactionMonthly:
-    get:
-      security:
-        - Bearer: []
-      tags:
-        - User Module
-      summary: User transaction
-      description: Fetch the transactions Monthly
-      parameters:
-        - in: header
-          name: Authorization
-          description: Bearer token
-          type: string
-          required: true
-        - in: body
-          name: body
-          description: Month
-          type: integer
-          required: true
-          schema:
-            $ref: '#/definitions/TransactionMonth'
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: User's transactions retrieved successully
-          schema:
-            $ref: '#/definitions/TransactionResponse'
-        '400':
-          description: Invalid Fields
-        '500':
-          description: Internal Server Error
   /user/transaction:
     get:
       security:
         - Bearer: []
       tags:
-        - User Module
-      summary: User transaction
-      description: Fetch one transaction
+        - User Module Transaction
+      summary: User Transaction API
+      description: API for fetching monthly user transaction
       parameters:
         - in: header
           name: Authorization
-          description: Bearer token
-          type: string
+          description: Attach Bearer JWT token
           required: true
-        - in: body
-          name: body
-          description: id
-          type: string
+          type: 'string'
+        - in: path
+          name: month
+          description: month
           required: true
-          schema: 
-            $ref: '#/definitions/TransactionId'
+          type: integer
       produces:
         - application/json
       responses:
         '200':
-          description: User's transactions retrieved successully
+          description: User transaction retrieved successully
           schema:
-            $ref: '#/definitions/TransactionResponse'
+            $ref: '#/definitions/Transaction'
         '400':
           description: Invalid Fields
         '500':
           description: Internal Server Error
-    /user/transaction:
+  /user/transaction/{id}:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - User Module Transaction
+      summary: User Transaction API
+      description: API for fetching one user transaction
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: 'string'
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: 'ID of the transaction to get'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: User Transaction retrieved successully
+          schema:
+            $ref: '#/definitions/Transaction'
+        '400':
+          description: Invalid Fields
+        '500':
+          description: Internal Server Error
     put:
       security:
         - Bearer: []
       tags:
-        - User Module
-      summary: User transaction
-      description: request update the transactions
+        - User Module Transaction
+      summary: User Transaction API
+      description: API for updating a user transaction
       parameters:
         - in: header
           name: Authorization
-          description: Bearer token
-          type: string
+          description: Attach Bearer JWT token
           required: true
+          type: 'string'
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: 'ID of the transaction to get'
         - in: body
           name: body
-          description: Update user profile attributes
+          description: Update user transaction
           required: true
           schema:
-            $ref: '#/definitions/TransactionUpdateRequest'
+            $ref: '#/definitions/TransactionUpdate'
       produces:
         - application/json
       responses:
         '200':
-          description: User's transactions retrieved successully
+          description: User profile retrieved successully
           schema:
-            $ref: '#/definitions/TransactionUpdateResponse'
+            $ref: '#/definitions/TransactionUpdate'
         '400':
           description: Invalid Fields
         '500':
           description: Internal Server Error
-    /user/transaction:
-    post:
-      security:
-        - Bearer: []
-      tags:
-        - User Module
-      summary: User transaction
-      description: Create a transaction
-      parameters:
-        - in: header
-          name: Authorization
-          description: Bearer token
-          type: string
-          required: true
-        - in: body
-          name: body
-          description: Create transaction attirubutes
-          required: true
-          schema:
-            $ref: '#/definitions/transactions'
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: User's transactions retrieved successully
-        '400':
-          description: Invalid Fields
-        '500':
-          description: Internal Server Error
-    /user/transcation:
     delete:
       security:
         - Bearer: []
       tags:
-        - User Module
-      summary: User transaction
-      description: delete a transaction
+        - User Module Transaction
+      summary: User Transaction API
+      description: API for delete a user transaction
       parameters:
         - in: header
           name: Authorization
-          description: Bearer token
-          type: string
+          description: Attach Bearer JWT token
           required: true
-        - in: body
-          name: body
-          description: id of transcation i want delete
+          type: 'string'
+        - in: path
+          name: id
+          type: integer
           required: true
-          schema:
-            $ref: '#/definitions/TransactionId'
+          description: 'ID of the transaction to get'
       produces:
         - application/json
       responses:
         '200':
-          description: User's transactions retrieved successully
+          description: User Transaction deleted successully
         '400':
           description: Invalid Fields
         '500':
@@ -317,108 +288,31 @@ definitions:
         type: string
       lastName:
         type: string
-  TransactionResponse:
-    type: object
-    properties:
-      status:
-        type: integer
-        example: 200
-      message:
-        type: string
-        example: Transactions successfully retrieved!
-  transactions:
-        type: array
-        items:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-              description: This transaction's UUID
-              example: 620cc0003724e10c821cfb55
-            date:
-              type: string
-              format: date-time
-              description: The date at which this transaction has been effectued
-              example: 2022-02-16T09:12:32.766+00:00
-            description:
-              type: string
-              description: This transaction description (recipient name)
-              example: Golden Sun Bakery
-            amount:
-              type: integer
-              description: The sum which has been payed by the user in cents
-              example: 50
-            balance:
-              type: integer
-              description: This account balance after payment in cents
-              example: 208979
-            type:
-              type: string
-              description: The method used by the user in order to pay (electronic, cash, etc...)
-              example: Electronic
-            category:
-              type: string
-              description: The category of this transaction (Food | Personal | etc...)
-              example: Food
-            notes:
-              type: string
-              description: Note added by the user. Default is empty.
-              example: Chocolatine
-  TransactionUpdateRequest:
-    type: object
+  Transaction:
+    type: 'object'
     properties:
       id:
-        type: string
-        format: uuid
-        description: The UUID of the transaction that need to be updated
-        example: 620cc0005784e10c821cfb33
-      category:
-        type: string
-        description: The new category of this transaction
-        example: Deposit
-      notes:
-        type: string
-        description: Note added by the user.
-        example: Salary
-  TransactionUpdateResponse:
-    type: object
-    properties:
-      status:
-        type: integer
-        description: Response status code from the API
-        example: 200
-      message:
-        type: string
-        description: Response message from the API
-        example: Transaction successfully updated!
-      transaction:
-        type: object
+        type: 'string'
+      transactionData:
+        type: 'object'
         properties:
-          id:
-            type: string
-            format: uuid
-            description: The UUID of the transaction that need to be updated
-            example: 620cc0005784e10c821cfb33
-          category:
-            type: string
-            description: The new category of this transaction
-            example: Deposit
-          notes:
-            type: string
-            description: Note added by the user.
-            example: Salary
-  TransactionId:
-    type: object
+          date:
+            type: 'string'
+          description:
+            type: 'string'
+          amount:
+            type: 'number'
+          detail:
+            type: 'object'
+            properties:
+              typeoftransaction:
+                type: 'string'
+              category:
+                type: 'string'
+              notes:
+                type: 'string'
+  TransactionUpdate:
+    type: 'object'
     properties:
-      id:
-        type: string
-        format: uuid
-        description: The UUID of the transaction that need to be updated
-        example: 620cc0005784e10c821cfb33
-  TransactionMonth:
-    type: object
-    properties:
-      month:
-        type: integer
-        example: 12
+      description:
+        type: 'string'
