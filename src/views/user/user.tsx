@@ -6,9 +6,7 @@ import Login from './../login/login';
 import { updateUser } from './../../store/slice';
 import { IwantToGet } from '../../store/selectors';
 
-interface UserProps { }
-
-const User: FC<UserProps> = () => {
+const User = () => {
   const dispatch = useDispatch<any>();
   const [isShowing, setIsShowing] = useState(false);
 

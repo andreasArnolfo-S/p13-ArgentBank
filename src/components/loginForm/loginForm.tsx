@@ -13,10 +13,11 @@ const LoginForm = () => {
 
   const mytoken = select[0].token;
 
-  console.log('mytoken', mytoken);
-  
+  const test = getToken();
+  console.log('test', test);
+    
   useEffect(() => {
-    if (mytoken !== null) {
+    if (test !== null) {
       navigate('/user');
     } else {
       dispatch(logoutUser());

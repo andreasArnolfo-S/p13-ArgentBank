@@ -41,12 +41,9 @@ export const loginUser = createAsyncThunk(
 export const secureToken = (token: string) => {
      const max = token.length - 1;
      const slice1 = token.slice(0, 50);
-     const slice3 = token.slice(50, 60);
-     const slice2 = token.slice(60, max);
-     
+     const slice2 = token.slice(50, max);
      sessionStorage.setItem('token', slice1);
      localStorage.setItem('token', slice2);
-     document.cookie = `token=${slice3}`;
 };
 
 export const profileUser = createAsyncThunk(
