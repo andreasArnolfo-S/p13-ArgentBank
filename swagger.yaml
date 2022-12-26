@@ -112,7 +112,7 @@ paths:
           description: Invalid Fields
         '500':
           description: Internal Server Error
-  /user/transaction:
+  /user/transaction/{month}:
     get:
       security:
         - Bearer: []

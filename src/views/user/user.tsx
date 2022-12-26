@@ -60,7 +60,6 @@ const User = () => {
     }
   ]
 
-
   return (
     connected ?
       <div className={styles.User}>
